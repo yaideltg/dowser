@@ -1,0 +1,12 @@
+#! /bin/csh
+echo "Removing dowser .o files, executables and links"
+foreach i ( CODE/Makearch.* )
+    set X = "$i:e"
+    if ( -e CODE/$X ) then
+	/bin/rm -r CODE/$X
+    endif
+    if ( -e bin/$X ) then
+	/bin/rm -r bin/$X
+    endif
+end
+/bin/rm bin/dowserx dowserinit

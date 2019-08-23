@@ -1,0 +1,47 @@
+#! /bin/csh
+
+echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+echo "* Installing dowser program"
+echo "* Enter a machine type from among the following choices:"
+
+echo -n "* "
+foreach i ( CODE/Makearch.* )
+echo -n " $i:e "
+end
+echo " "
+
+echo -n "* -->"
+
+set MACHINE = $<
+
+/bin/rm -f dowserinit
+echo "setenv DOWSER `pwd`" > dowserinit
+echo "setenv DOW_MACH $MACHINE" >> dowserinit
+echo 'set path = ( $path $DOWSER/bin $DOWSER/bin/$DOW_MACH )' >> dowserinit
+
+echo "*"
+echo "* The Install script has created a file called dowserinit"
+echo "* The contents of this file are:"
+echo "* ---------"
+    cat dowserinit
+echo "* ---------"
+endif
+echo " "
+echo "NOTABENE"
+echo "In future use of dowser include this statement in your .cshrc file:"
+echo "    source dowserinit"
+echo "NOTABENE"
+echo " "
+
+echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+echo "*"
+echo "* Now Install will proceed to make DOWSER"
+source dowserinit
+cd CODE
+if ( $MACHINE == "dec" ) then
+    echo "* Note that 'gmake' wll be used to make dowser, instead of 'make'"
+    alias make gmake
+endif
+make
+
+echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"

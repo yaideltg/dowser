@@ -1,0 +1,16 @@
+#! /bin/csh
+if ( $#argv == "0" ) then
+    echo "Compare-dowser"
+    echo "Must give other directory name as argument"
+    exit 1
+endif
+
+foreach i ( CODE/*.[cfh] CODE/Ma* DATA/atomdict.db DATA/atomparms.db DATA/ms.param DATA/ms.rad \
+    DATA/ms_largeR.param DOCS/Dowman.htm DOCS/Dowser.htm PDB/*.pdb Install make-clean \
+    Compare-dowser bin/cleanup_dowser bin/dowser bin/dryer bin/ms2pdb )
+
+    echo " "
+    echo $i " ====================="
+    diff $i $1/$i
+
+end
