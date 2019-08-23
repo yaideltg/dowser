@@ -1,0 +1,66 @@
+#! /bin/csh  
+# append-dowser-water:
+#   change HETATM to ATOM in dowserwat.pdb
+#   append this to the pdb file  (= argument)
+#   if a second arg is given, this is used instead of dowserwat.pdb
+
+if ( $#argv == 2) then
+    set DW = $2
+else
+    set DW = dowserwat.pdb
+endif
+
+echo "* * * * * * * * * * * * * * * * * * * * * * * * * *"
+echo "* append_dowser_water (or xtal water) to the original pdb file"
+echo "* Append $DW to $1 file"
+echo "*"
+
+if ( -e $DW && -e $1 ) then
+else
+    if ( -e $DW ) then
+	echo "* File $1 not found"
+    else
+	echo "* File $DW not found"
+    endif
+    exit 1
+endif
+
+# first strip high-energy waters, if any
+set W = `wc $DW`
+/bin/rm -f tmp
+chooser $DW tmp energy
+
+# message if number has decreased
+set WW = `wc tmp`
+if ( $W[1] != $WW[1] ) then
+    set W = $W[1]
+    set WW = $WW[1]
+@   W /= 3
+@   WW /= 3
+echo "* Apply energy criterion to delete one or more waters from input"
+echo "* Number in input $DW = $W, number in output = $WW"
+echo "*"
+endif
+
+set DW = tmp
+
+echo "* HETATM..HOH records in the pdb file will be removed"
+echo "* HETATM records in the water file will become ATOM records"
+echo "*"
+echo "* Output file is named ext_$1"
+
+/bin/rm -f ext_$1
+sed '/^HETATM.*HOH/ d' $1 > ext_$1
+echo "" >> ext_$1
+sed 's/HETATM/ATOM  /' $DW >> ext_$1
+echo "*"
+
+foreach i ( xtal_o xtal_hoh )
+if ( -e $i.pdb ) then
+    echo "* also: save $i.pdb as $i.pdb_1, etc."
+    append_index $i.pdb
+endif
+
+echo "* * * * * * * * * * * * * * * * * * * * * * * * * *"
+/bin/rm -f tmp
+exit 0

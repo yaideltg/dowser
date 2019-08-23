@@ -1,0 +1,41 @@
+#! /bin/csh -f
+#* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#* This is part of the DOWSER program
+#*
+#* DOWSER finds buried water molecules in proteins.
+#*  cf. Zhang & Hermans, Proteins: Structure, Function and Genetics 24: 433-438, 1996
+#*
+#* DOWSER was developed by the Computational Structural Biology Group at the
+#* University of North Carolina, Chapel Hill by Li Zhang, Xinfu Xia, Jan Hermans,
+#* and Dave Cavanaugh.  Revised 1998.
+#* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#*   append_index script - 
+#*      arg1 (=file) renamed arg1_1, etc.
+#* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+set nonomatch
+
+# move file to file_1, etc.
+	if ( -e $1 ) then
+	    if ( -e $1_1 ) then
+		mv $1 $1_0
+	    else
+		mv $1 $1_1
+		exit 0
+	    endif
+
+	    set N = 1
+	    while ( -e $1_$N )
+@		N ++
+	    end
+
+	    set M = $N
+@	    M --
+	    while ( $N != "0" )
+		mv $1_$M $1_$N
+@		N --
+@		M --
+	    end
+	endif
+exit 0

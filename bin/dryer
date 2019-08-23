@@ -1,0 +1,1 @@
+grep -v HOH | grep -v H2O | grep -v REMARK | grep -v END

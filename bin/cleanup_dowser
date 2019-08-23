@@ -1,0 +1,58 @@
+#! /bin/csh -f
+#* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#* This is part of the DOWSER program
+#*
+#* DOWSER finds buried water molecules in proteins.
+#*  cf. Zhang & Hermans, Proteins: Structure, Function and Genetics 24: 433-438, 1996
+#*
+#* DOWSER was developed by the Computational Structural Biology Group at the
+#* University of North Carolina, Chapel Hill by Li Zhang, Xinfu Xia, Jan Hermans,
+#* and Dave Cavanaugh.  Revised 1998.
+#* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#*   cleanup_dowser script - this removes the intermediate files produced by dowser and
+#*           dowserx.
+#*      Only when used with argument "all" is reform.pdb removed, and also 
+#*      dowserwat.pdb will be renumbered dowserwat.pdb_1, etc.
+#* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+set nonomatch
+set doall = "0"
+set directory = "."
+
+# With argument "all" ....
+if ( $#argv != "0" ) then
+    set N = $#argv
+    while ( $N != "0" )
+    if ( $argv[$N] == "all" ) then
+	set doall = "1"
+    else
+	set directory = $argv[$N]
+    endif
+@	N--
+    end
+endif
+
+# These files are always removed by cleanup
+foreach i ( *.dow core surface.wat BEFORE REENTRANT XMS.log ms.param ms.rad )
+    /bin/rm -f $directory/$i
+end
+
+if ( $doall == "1" ) then
+# remove the reformatted PDB file created by Dowser.
+	foreach i ( intsurf intsurfx reform xtalwat xtal_hoh xtal_o )
+	    if ( -e $directory/$i.pdb ) then
+		/bin/rm -f $directory/$i.pdb
+	    endif
+	end
+
+# do not remove dowserwat.pdb, but move it to dowserwat.pdb_1, etc.
+# same for dowser.report
+        foreach i ( dowserwat.pdb dowserwat_all.pdb dowser_report )
+	   if ( -e $directory/$i ) then
+	       append_index $directory/$i
+	   endif
+	end
+endif
+
+exit 0
