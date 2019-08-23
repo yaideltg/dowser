@@ -1,3 +1,5 @@
+# Authors: Zhang & Hermans
+
 # Dowser 
 
 This program aims to search energy positions of a water molecule in cavities of proteins having minimum energy. Read Zhang and Hermans' paper for more information:
