@@ -1,0 +1,402 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Dowman</TITLE>
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.04Gold (X11; I; OSF1 V4.0 alpha) [Netscape]">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" LINK="#0000FF" VLINK="#800080">
+
+<CENTER><P><B><FONT COLOR="#FF0000"><FONT SIZE=+2>UNC Computational Structural
+Biophysics Group</FONT></FONT></B> </P></CENTER>
+
+<P><FONT COLOR="#007700"><FONT SIZE=+4>DOWSER manual</FONT></FONT> 
+<HR></P>
+
+<H3>PROGRAM WAS LAST UPDATED in February 2003 to correct problems with the 
+<font color=red>dowserx</font> script (which places water in crevices).</H3>
+<HR>
+
+<P><B><FONT SIZE=+1><FONT COLOR="#0000FF">by: <A HREF="/People/hermans/">Jan
+Hermans,</A></FONT><FONT COLOR="#0000FF"> Xinfu Xia, Li Zhang, Dave Cavanaugh<BR>
+</FONT></FONT></B><FONT SIZE=+1>Department of Biochemistry and Biophysics
+<BR>
+School of Medicine<BR>
+University of North Carolina<BR>
+Chapel Hill, NC 27599-7260</FONT> </P>
+
+<P><B><FONT SIZE=+1>For additional information see <A HREF="index.html">&quot;About
+the Dowser program&quot;</A></FONT> </B> 
+<HR></P>
+
+<P><B>Nota bene: This manual describes how to use the new Dowser developed
+in February 1998., with modifications thru March 1999.</B> </P>
+
+<P><B><FONT COLOR="#FF00FF"><FONT SIZE=+1>Web dowser:</FONT></FONT></B></P>
+
+<P><FONT SIZE=+1><FONT COLOR="#000000">An interactive version of dowser
+is under development as part of the Biology Work Bench (not yet publicly
+available). BWB dowser offers similar options as does &quot;batch&quot;
+dowser; in addition, output can be viewed interactively with chime/rasmol.
+Also in interactive dowser, the user is prompted to create </FONT>a dictionary
+describing &quot;hetero atom&quot; residues, by adding polar hydrogens,
+and specifying atomic charges.</FONT></P>
+
+<P><B><FONT COLOR="#FF00FF"><FONT SIZE=+1>Before running Dowser:</FONT></FONT></B>
+</P>
+
+<P><FONT SIZE=+1>Before running Dowser execute <B><FONT COLOR="#FF00FF">&quot;source
+/usr/local/initial/dowserinit&quot;</FONT><FONT COLOR="#007700">.</FONT></B>
+This initalizes the environment variable &quot;DOWSER&quot; and places
+the Dowser executables in your &quot;path&quot;. (The exact location of
+the file dowserinit depends on the installation.)</FONT> 
+<HR></P>
+
+<P><B><FONT COLOR="#FF00FF"><FONT SIZE=+1>Most common USAGE:</FONT></FONT></B>
+</P>
+
+<P><B><FONT COLOR="#000088"><FONT SIZE=+1>dowser inputfile.pdb [-probe
+RADIUS] [-hetero] [-atomtypes FILE_t] [-atomparms FILE_p] [-separation
+SEPARATION] [-onlyxtalwater] [-noxtalwater]</FONT></FONT></B></P>
+
+<P><FONT SIZE=+1>Execute the dowser script with as input the specified
+pdb-formatted file of protein coordinates, and as output a file of low-energy
+water molecules that could be placed in cavities inside the protein (also
+in PDB format; filename &quot;dowserwat.pdb&quot;).</FONT> </P>
+
+<P><FONT SIZE=+1><B>-probe RADIUS</B>: sets the radius of the probe (representing
+a solvent molecule) for the MS program (default is 0.2 &Aring;).</FONT>
+</P>
+
+<P><FONT SIZE=+1><B>-hetero</B>: hetero atoms (HETATM records in the PDB
+file) will be included, with the exception of crystallographic water molecules
+identified as having atom name &quot;O&quot; and residue name &quot;HOH&quot;.
+(The default is to use only ATOM records.)</FONT> </P>
+
+<P><FONT SIZE=+1><B>-atomtypes</B>: the named file will be appended to
+the file provided with dowser (DATA/atomdict.db).</FONT> </P>
+
+<P><FONT SIZE=+1><B>-atomparms</B>: the named file will be appended to
+the file provided with dowser (DATA/atomparms.db).</FONT> </P>
+
+<P><FONT SIZE=+1><B>-separation SEPARATION:</B> the surface points obtained
+with the ms program will be pruned to a set of points at least <B>SEPARATION</B>
+Angstroms apart.</FONT></P>
+
+<P><FONT SIZE=+1><B>-onlyxtalwater</B>: the only positions that will be
+tested for optimal placement of a water molecule are the coordinates of
+the internal water molecules given in the pdb file. </FONT></P>
+
+<P><FONT SIZE=+1><B>-noxtalwater</B>: the coordinates of the internal water
+molecules given in the pdb file will not be considered as additional test
+points for placement of water molecules.</FONT> </P>
+
+<P><FONT SIZE=+1>The dowser script will perform the following steps:</FONT>
+</P>
+
+<OL>
+<LI><FONT SIZE=+1>CLEAN UP FILES: remove files with same names as those
+that will be created by dowser.</FONT> </LI>
+
+<LI><FONT SIZE=+1><FONT COLOR="#FF0000">Process the crystallographic water
+molecules provided in the pdb file. </FONT>First, hydrogen atoms are added.
+Then, rotate each molecule to get the lowest energy, first each alone against
+the protein as the environment, then all together against the protein plus
+each other as the environment. The result will be saved (file xtal_hoh.pdb)
+and he coordinates compared with those of the water molecules found independently.</FONT></LI>
+
+<LI><FONT SIZE=+1><FONT COLOR="#FF0000">REFORMAT THE INPUT PDB FILE</FONT>
+(execute: <FONT COLOR="#007700"><B>reformatPDB</B>;</FONT> with input <U>inputfile.pdb</U>
+and with output reform.pdb)<BR>
+The output pdb file will contain protein atoms and the polar hydrogens.
+The positions of missing atoms are computed from the coordinates of the
+other atoms and geometric information in a file &quot;<U>atomdict.db</U>&quot;.
+The output file will contain for each atom also its atomic charge and Lennard-Jones
+parameters. (Charges are found in the file &quot;atomdict.db&quot; and
+LJ parameters in a file called &quot;<U>atomparms.db</U>&quot;.)</FONT>
+</LI>
+
+<LI><FONT SIZE=+1>COMPUTE THE MOLECULAR SURFACE with Connolly's MS program,
+or with <B><FONT COLOR="#008000">qms</FONT></B>, a fast alternative that
+produces only the places at which a solvent probe touches three protein
+atoms simultaneously (output file is ms.pro)</FONT> </LI>
+
+<UL>
+<LI><FONT SIZE=+1>CONVERT PDB to MS format (execute: <B><FONT COLOR="#007700">pdb2ms</FONT></B>
+with input reform.pdb and output ms.dow)</FONT> </LI>
+
+<LI><FONT SIZE=+1><FONT COLOR="#FF0000">RUN THE MS program</FONT><FONT COLOR="#000000">
+(execute: </FONT><B><FONT COLOR="#007700">xms</FONT></B><FONT COLOR="#000000">
+(or </FONT><B><FONT COLOR="#008000">qms</FONT></B><FONT COLOR="#000000">)
+with input ms.dow and output xms.dow)<BR>
+The. MS program requires also file of run parameters and atomic radii (&quot;<U>ms.param</U>&quot;
+and &quot;<U>ms.rad</U>&quot;).</FONT></FONT> </LI>
+
+<LI><FONT SIZE=+1>CONVERT OUTPUT FROM MS to PDB format (execute: <B><FONT COLOR="#007700">ms2pdb</FONT></B>
+with input xms.dow and output pdbms.dow)</FONT> </LI>
+</UL>
+
+<LI><FONT SIZE=+1>SORT SURFACE INTO BURIED AND EXPOSED (execute: <B><FONT COLOR="#007700">drain</FONT></B>
+with input reform.pdb and pdbms.pro, output surface.wat and <U>intsurf.pdb</U>)
+</FONT> </LI>
+
+<LI><FONT SIZE=+1><FONT COLOR="#FF0000">COMPUTE ENERGIES FOR BEST WATER
+PLACEMENT STARTING FROM EACH INPUT SURFACE POSITION. </FONT>First, hydrogen
+atoms are added. Then, each molecule is rotated to get the lowest energy,
+first each alone against the protein as the environment, <I>then all together
+against the protein plus each other</I> as the environment. <FONT COLOR="#000000">(Execute:
+</FONT><B><FONT COLOR="#007700">placeWat</FONT></B><FONT COLOR="#000000">
+with input reform.pdb and intsurf.pdb and output setwat.pro. Normally,
+the crystal water positions are first added to the set of surface points.)
+</FONT></FONT></LI>
+
+<LI><FONT SIZE=+1>SORT WATER MOLECULES AND RETAIN LOW-ENERGY ONES, ELIMINATING
+HIGHER-ENERGY SITES WHEN TOO CLOSE (execute: <B><FONT COLOR="#007700">chooser</FONT></B>
+with input setwat.pro and output <U>dowserwat.pdb</U>)</FONT> </LI>
+
+<LI><FONT SIZE=+1>The crystal and dowser water positions are compared in
+the <B><FONT COLOR="#008000">dowser_report. </FONT><FONT COLOR="#000000">(with
+program&nbsp;</FONT><FONT COLOR="#008000">CompareWat</FONT><FONT COLOR="#000000">).
+</FONT></B><FONT COLOR="#000000">An <A HREF="bpti.dowser">example of dowser_report</A>
+for BPTI is avlailable.</FONT></FONT></LI>
+</OL>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P><B><FONT SIZE=+1><FONT COLOR="#FF00FF">Alternate USAGE</FONT>
+<FONT COLOR=red>(dowserx did not work correctly in versions released before February 2003):</FONT></FONT></B>
+</P>
+
+<P><B><FONT COLOR="#000088"><FONT SIZE=+1>dowserx inputfile.pdb [-probe
+RADIUS] [-hetero] [-atomtypes FILE_t] [-atomparms FILE_p] </FONT></FONT></B>
+</P>
+
+<P><FONT SIZE=+1>When Dowser is used in this alternate manner, surface
+points loacted in reasonably deep crevices, but which would be considered
+as surface points with the normal use of Dowser, are retained. <B><FONT COLOR="#000088">Hence,
+dowserx can find low-energy water molecules in crevices</FONT></B>. The
+script performs the same steps, except that step 4 is modified, and output
+from step 4c becomes input for step 5.</FONT> </P>
+
+<UL>
+<LI><FONT SIZE=+1>step 4a. A second molecular surface is calculated with
+a large probe radius (5 A instead of 0.4 A). <FONT COLOR="#000000">(execute:
+</FONT><B><FONT COLOR="#007700">xms</FONT></B><FONT COLOR="#000000"> with
+input ms.pro and output bigms.pro, with parameters from <U>ms_largeR.param</U>).</FONT></FONT>
+</LI>
+
+<LI><FONT SIZE=+1>step 4b. CONVERT OUTPUT FROM MS to PDB format (execute:
+<B><FONT COLOR="#007700">ms2pdb</FONT></B> with input bigms.dow and output
+pdbbigms.dow)</FONT> </LI>
+
+<LI><FONT SIZE=+1>step 4c. Points in the first molecular surface lying
+within 5 A; of any one point on the second surface are eliminated (execute
+<B><FONT COLOR="#007700">scrape</FONT></B> with input xms.wat and pdbbigms.wat,
+and output <U>intsurf.pdb</U>)</FONT> </LI>
+
+<LI><FONT SIZE=+1>step 5. <FONT COLOR="#FF0000">COMPUTE ENERGIES FOR BEST
+WATER PLACEMENT STARTING FROM EACH INPUT SURFACE POSITION </FONT><FONT COLOR="#000000">(execute:
+</FONT><B><FONT COLOR="#007700">placeWat</FONT></B><FONT COLOR="#000000">
+with input reform.pdb and intsurf.pdb and output setwat.wat)</FONT></FONT>
+</LI>
+</UL>
+
+<P>
+<HR WIDTH="100%"><B><FONT COLOR="#000088"><FONT SIZE=+1>dowser-repeat inputfile.pdb
+[-probe RADIUS] [-hetero] [-atomtypes FILE_t] [-atomparms FILE_p] </FONT></FONT></B>
+</P>
+
+<P><FONT SIZE=+1>The water molecules found by dowser in a fist pass are
+added to the protein atoms and constitute part of the permanent environment
+for placing additional water molecules.</FONT></P>
+
+<P>
+<HR></P>
+
+<P><B><FONT COLOR="#FF00FF"><FONT SIZE=+1>Viewing the results</FONT></FONT></B>
+</P>
+
+<P><FONT SIZE=+1>The following files created by dowser are in pdb format
+and can be viewed with programs such as RasMol and vmd: </FONT> </P>
+
+<UL>
+<LI><FONT SIZE=+1>reform.pdb = protein with polar hydrogens</FONT> </LI>
+
+<LI><FONT SIZE=+1>intsurf.pdb = internal surface points</FONT> </LI>
+
+<LI><FONT SIZE=+1>xtalwat.pdb = internal water sites in the set of <FONT COLOR="#FF00FF">crystallographic
+waters</FONT> (if any)</FONT> </LI>
+
+<LI><FONT SIZE=+1>dowserwat.pdb = internal water sites found by dowser</FONT>
+</LI>
+</UL>
+
+<P><FONT SIZE=+1>When dowser is run a second time in the same directory,
+the first three of these files are removed, while the fourth file is renamed
+dowserwat.pdb_1.</FONT> 
+<HR></P>
+
+<P><B><FONT COLOR="#FF00FF"><FONT SIZE=+1>Reformatting of the PDB file:
+Description of data files and method</FONT></FONT></B> </P>
+
+<P><FONT SIZE=+1><FONT COLOR="#FF0000">atomdict.db</FONT>: describes the
+atom types for each residue (located in the DATA subdirectory).</FONT>
+</P>
+
+<P><FONT SIZE=+1>Each residue type is introduced with a RESIDUE record
+containing the name of the residue and an optional TERM specification followed
+by the names of the preferred modifications to be applied at chain beginnings
+and ends. This is followed by the atoms that will be represented in the
+reformatted pdb file.</FONT> </P>
+
+<P><FONT SIZE=+1>Termini: the atoms describing a residue at a chain end
+are constructed by combining those for the residue itself and the selected
+terminal residue; when an atom occurs in each list, the description given
+for the terminus is used.</FONT> </P>
+
+<P><FONT SIZE=+1>ATOM descriptors: for each atom the file gives the atom's
+name, the name of the atom to which it is bonded earlier in the list (=
+backchain), the name of the atom farthest down the list to which it is
+bonded (= forward chain), bondlength (in &Aring;), bondangle and dihedral
+angle (in degrees), atomic partial charge and atom type (type provides
+a cross-reference to the file &quot;atomparms.db&quot;).</FONT> </P>
+
+<P><FONT SIZE=+1>Bondlength, bond angle and dihedral angle are defined
+for (successive) backchains. (E.g., backchain of H is N, backchain of N
+is C of preceding residue, backchain of C is CA. The angle value of 123&deg;
+given for atom H is for C-N-H, and the dihedral of 0&deg; is for CA-C-N-H,
+corresponding to a planar peptide group.)</FONT> </P>
+
+<P><FONT SIZE=+1>Wherever possible, the coordinates of a missing atom are
+computed using the atom, its backchain and double backchain, and the forward
+chain of the backchain. This is best explained with an example: for H the
+backchain is N, the double backchain is C of the preceding residue, and
+the forward chain of N is CA. The atom will be placed so that the angle
+between the planes formed by C-N-CA and C-N-H is equal to the difference
+of the ideal dihedrals given in the table for H and CA (= 0-180).</FONT>
+</P>
+
+<PRE><FONT SIZE=+1>RESIDUE ALA TERM NH3 COO
+ATOM ALA  N    C    CA    1.320  114.0  180.0  -0.280 N
+ATOM ALA  H    N    NOT   1.000  123.0    0.0   0.280 H
+ATOM ALA  CA   N    C     1.470  123.0  180.0   0.000 CH1
+ATOM ALA  CB   CA   NOT   1.530  110.0   60.0   0.000 CH3
+ATOM ALA  C    CA   N     1.530  110.0  180.0   0.380 CR
+ATOM ALA  O    C    NOT   1.240  121.0    0.0  -0.380 O
+........
+RESIDUE NH3 TERM
+ATOM NH3  H    NOT  N     0.000    0.0    0.0   0.248 H
+ATOM NH3  N    H    CA    1.000    0.0    0.0   0.129 N
+ATOM NH3  H2   N    NOT   1.000  109.5  -60.0   0.248 H
+ATOM NH3  H3   N    NOT   1.000  109.5   60.0   0.248 H</FONT>
+</PRE>
+
+<P><FONT SIZE=+1><FONT COLOR="#FF0000">atomparms.db</FONT>: Describes the
+Lennard Jones parameter for each atom type. These values are the Gromos-Cedar
+parameters from Biopolymers <B>23</B>: 1513-1518, 1984. The LJ parameters
+for a pair are obtained by multiplication of the values for each type in
+the table. E. g., the LJ parameters for type N interacting with type CH1
+are obtained as: -49.36*111.80 *10</FONT><SUP>-6<BR>
+</SUP><FONT SIZE=+1>kJ/(mole.nm</FONT><SUP>6</SUP><FONT SIZE=+1>) and 1300*8470.4*10<SUP>-12</SUP>
+kJ/(mole.nm</FONT><SUP>12</SUP><FONT SIZE=+1>). </FONT> </P>
+
+<P><FONT SIZE=+1>Note that the unit of energy in Dowser output is the kcal,
+and the unit of distance in PDB files is the &Aring;.</FONT> </P>
+
+<PRE>REMARK atomtype LJ-a LJ-b
+TYPE   N      49.36   1300.0
+TYPE   H       0.00      0.0
+TYPE   CH1   111.80   8470.4
+</PRE>
+
+<P>
+<HR></P>
+
+<P><B><FONT COLOR="#FF00FF"><FONT SIZE=+1>Description of data files needed
+with Connolly's MS program:</FONT></FONT></B> </P>
+
+<P><FONT SIZE=+1><FONT COLOR="#FF0000">ms.param</FONT>: parameters for
+the MS program residue (located in the DATA subdirectory). One record specifies:
+surface point density, probe radius, bury flag and output format; default
+input supplied with Dowser is: 3.0, 0.4, 0, 2</FONT>.<FONT SIZE=+1> (The
+dowser script creates, and then again removes, a new file ms.param in the
+working directory if the probe radius is specified.)</FONT> </P>
+
+<P><FONT SIZE=+1><FONT COLOR="#FF0000">ms.rad</FONT><I>:</I> atomic radii
+for the MS program<BR>
+default supplied with Dowser in the DATA subdirectory is:<FONT FACE="Courier">
+</FONT></FONT> </P>
+
+<PRE>    1   2.89000 # carbon without hydrogens
+    2   3.00000 # carbon with hydrogens
+    3   2.40000 # nitrogen
+    4   2.20000 # oxygen
+    5   2.70000 # sulfur
+    6   2.66666 # phosphorus
+    7   1.49000 # type &quot;z&quot;, i.e., Zn
+</PRE>
+
+<P><FONT SIZE=+1>The indices are linked to atom type in the pdb2ms step.</FONT>
+</P>
+
+<P><FONT SIZE=+1>Note. The command &quot;xms help&quot; gives information
+how to use the MS program outside dowser.</FONT> 
+<HR></P>
+
+<P><B><FONT COLOR="#FF00FF"><FONT SIZE=+1>How to use Dowser with non-protein
+components.</FONT></FONT></B> </P>
+
+<P><FONT SIZE=+1>The current version of the file atomdict.db covers all
+<FONT COLOR="#FF00FF">amino acid residues</FONT>. (Dowser chooses a disulfide-bridged
+type of cysteine residue for pairs of residues selected on the basis of
+a distance criterion.) </FONT> </P>
+
+<P><FONT SIZE=+1><FONT COLOR="#FF00FF">Water molecules</FONT> can be included
+in the calculation when all three atoms are given. These must then have
+names &quot;OW&quot;, &quot;H1&quot; and &quot;H2&quot;, and the residue
+name must be &quot;HOH&quot;. (Use this to fill large cavities by iteratively
+applying dowser, each time appending the newly found water molecules to
+the pdb file.)</FONT> </P>
+
+<P><FONT SIZE=+1>A similar description of <FONT COLOR="#FF00FF">nucleic
+acid residues</FONT> is in preparation.</FONT> </P>
+
+<P><FONT SIZE=+1>Dowser includes <FONT COLOR="#FF00FF">hetero atoms</FONT>
+(HETATM records) in the input if the -hetero argument was specified. In
+order to include a molecule containing hetero atoms in the dowser calculation,
+a supplementary dictionary file (similar to atomdict.db) must be prepared
+in which the molecule is described as a &quot;residue&quot;. Each atom
+in this file must have a charge and an atom type. If the molecule has polar
+hydrogen atoms, then these must be represented, and values of the appropriate
+bondlengths, bondangles and dihedrals and the necessary backchains and
+forward chains must be provided so that the coordinates of these polar
+hydrogens can be computed.</FONT> </P>
+
+<P><B><FONT SIZE=+1>Example: molecule of phenol</FONT></B> </P>
+
+<P><FONT SIZE=+1>If all coordinates of the phenol molecule are in the PDB
+file with the exception of the hydrogen, then only a few of the items are
+needed. Atom types and partial charges use here are the same as for Tyrosine
+in the protein dictionary. The H-atom will (arbitrarily) lie trans to C2.
+(The residue name &quot;PHL&quot; and the atom names must be the same as
+those used in the pdb file.)</FONT> </P>
+
+<PRE>RESIDUE PHL
+ATOM PHL  C6   NOT  NOT   0.000  000.0    0.0   0.000 CHR
+ATOM PHL  C5   NOT  NOT   0.000  0.000    0.0   0.000 CHR
+ATOM PHL  C3   NOT  NOT   0.000  0.000    0.0   0.000 CHR
+ATOM PHL  C4   NOT  NOT   0.000  0.000    0.0   0.000 CHR
+ATOM PHL  C2   NOT  C6    0.000  0.000    0.0   0.000 CHR
+ATOM PHL  C1   C2   O     0.000  0.000    0.0   0.150 CR
+ATOM PHL  O1   C1   H     0.000  0.000    0.0  -0.548 OA
+ATOM PHL  H    O1   NOT   1.000  105.0  180.0   0.398 H
+</PRE>
+
+<P><FONT SIZE=+1>If this information is in a file called &quot;phenol.db&quot;,
+then use the following command to run the dowser calculation:</FONT> </P>
+
+<PRE>dowser phenolcomplex.pdb -hetero -atomtypes phenol.db
+</PRE>
+
+</BODY>
+</HTML>

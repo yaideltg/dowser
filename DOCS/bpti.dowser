@@ -1,0 +1,108 @@
+/ATTO/hermans/dowser/bin/sgi-mips4
+/ATTO/hermans/dowser/bin
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                           *
+*  DOWSER: A program to place water molecules in cavities   *
+*          inside protein molecules.                        *
+*                                                           *
+* Developed by the Computational Structural Biology group   *
+* at the Univ. of North Carolina at Chapel Hill.            *
+* Authors: Li Zhang, Xinfu Xia, Jan Hermans, Dave Cavanaugh *
+* Revised February 1998                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*  
+* CLEAN UP FILES
+* execute: cleanup_dowser
+*  
+* REFORMAT THE INPUT PDB FILE and EXTEND WITH POLAR HYDROGEN ATOMS
+* execute: reformatPDB -pdbin 1BPI.pdb  -pdbout reform.pdb
+*
+* DOWSER - default, no HETATM records will be used
+* Input pdb file contains 620 atoms
+* Reformatted and extended pdb file contains 568 atoms
+*
+* EXTRACT WATER MOLECULES FROM THE INPUT PDB FILE
+* Execute: grep ^HETATM.*HOH 1BPI.pdb > xtal_o.dow
+* The input file contains 167 crystallographic water molecules
+*  
+* CALCULATE THE ENERGIES OF XTAL WATERS
+*    a. REMOVE EXTERNAL WATERS FROM THE XTALWAT SET (creating xtal_o.pdb)
+*       execute: drain reform.pdb xtal_o.dow xtalsurf.dow xtal_o.pdb
+*       Of the crystallographic waters 3 are internal
+*
+*    b. PLACE HYDROGENS ON XTAL WATERS IN THE MOST ENERGETICALLY FAVORABLE ORIENTATION (creating xtal_hoh.pdb)
+*       execute: placeWat reform.pdb xtal_o.pdb rotate > place_xtal_o.dow
+...
+*  
+*    c. REFINE XTAL WATER ORIENTATIONS by rotation only (with mutual interaction) 
+*       execute: RefineWat reform.pdb place_xtal_o.dow rotate > xtal_hoh.pdb
+*       Performed 2 iteration(s) for refinement
+*
+* COMPUTE THE MOLECULAR SURFACE
+*    a. CONVERT PDB to MS format, eliminate H atoms and create file ms.rad
+*       execute: pdb2ms reform.pdb ms.dow
+*
+*    b. RUN THE QMS program
+*       PROBE RADIUS for QMS program is 0.20000
+* execute: qms ms.dow 454 ms.rad 5 0.20000 > xms.dow
+*
+*       The MS program has produced 467 surface points
+*
+*    c. CONVERT OUTPUT FROM MS
+*       execute: ms2pdb < xms.dow > pdbms.dow
+*
+* SORT SURFACE INTO BURIED AND EXPOSED
+* execute: drain reform.pdb pdbms.dow surface.wat intsurf.pdb
+* Of the surface points 22 are internal
+*
+* REDUCE THE NUMBER OF INTERNAL POINTS with 1 Angstrom separation
+* execute: ReduceIntSurf intsurf.pdbx tmp 1
+* Reduce the number of internal surface points before running PlaceWat
+* Separation between internal surface points will be 1.000000
+* Number of surface points in  input = 22
+* Number of surface points in output = 10
+*
+* ADD the internal XTAL waters to the internal surface sites
+*
+* COMPUTE ENERGIES FOR BEST WATER PLACEMENT FOR EACH INPUT XYZ
+* execute: placeWat reform.pdb intsurf.pdb both > placewat.dow
+............. 
+*
+* SORT WATER MOLECULES BY ASCENDING ENERGIES and ELIMINATE
+* OVERLAPPING WATERS
+* execute: chooser placewat.dow chooser.dow distance
+* There are 4 waters remaining
+*
+* REFINE THE FINAL WATER POSITIONS - DOWSER WATERS NOW INTERACT WITH EACH OTHER
+* execute: RefineWat reform.pdb chooser.dow both > dowserwat.dow
+* Performed 4 iteration(s) for refinement
+*
+* SORT WATER MOLECULES BY ASCENDING ENERGIES and ELIMINATE
+* OVERLAPPING and HIGH ENERGY WATERS
+* execute: chooser refine.dow dowserwat_all.pdb both
+* There are 9 remaining water molecules
+*
+* DRAIN AWAY EXTERNAL DOWSER WATERS
+* execute: drain reform.pdb dowserwat_all.pdb junk.dow dowserwat.pdb
+* There are 9 remaining water molecules
+*
+* Compare the locations of the dowser and xtal waters
+* execute: CompareWat dowserwat_all.pdb dowserwat.pdb xtal_o.dow xtal_hoh.pdb
+*
+
+* Find nearest xtal water for each dowser water
+     Dowser water         energy  distance       nearest xtal water
+# 1  31.81   7.23   1.71  -25.20   0.08 A  # 62  31.77   7.22   1.78
+# 2  32.39   7.61   4.44  -23.48   0.22 A  # 61  32.58   7.51   4.39
+# 3  33.53   4.42  10.67  -17.97   0.19 A  # 60  33.45   4.29  10.78
+
+* Find nearest dowser water for each internal xtal water
+   Internal xtal water     energy distance       nearest Dowser water
+# 60  33.45   4.29  10.78  -17.88   0.19 A  # 3  33.53   4.42  10.67
+# 61  32.58   7.51   4.39  -25.27   0.22 A  # 2  32.39   7.61   4.44
+# 62  31.77   7.22   1.78  -23.82   0.08 A  # 1  31.81   7.23   1.71
+*
+* Place a REMARK to identify original pdb file in each output pdb file
+*
+* Remove intermediate files
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
