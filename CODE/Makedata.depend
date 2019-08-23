@@ -1,0 +1,21 @@
+$(ARCH)/readPDB10.o:	readPDB10.c 	dowser.h
+$(ARCH)/WriteStr.o:	WriteStr.c	dowser.h
+$(ARCH)/pdb2ms.o:	pdb2ms.c	dowser.h
+$(ARCH)/scrape.o:	scrape.c	dowser.h
+$(ARCH)/drain.o:	drain.c		dowser.h
+$(ARCH)/chooser.o:	chooser.c	dowser.h
+$(ARCH)/xms.o:		xms.f
+$(ARCH)/reformatPDB.o:	reformatPDB.c	dowser.h
+$(ARCH)/placeWat.o:	placeWat.c	dowser.h
+$(ARCH)/RefineWat.o:	RefineWat.c	dowser.h
+$(ARCH)/CompareWat.o:	CompareWat.c	dowser.h
+$(ARCH)/Align.o:	Align.c		dowser.h
+$(ARCH)/MinimizeFRPR.o:	MinimizeFRPR.c	dowser.h
+$(ARCH)/MakeApex.o:	MakeApex.c	dowser.h pair.H
+$(ARCH)/qms.o:		qms.c		dowser.h pair.H
+$(ARCH)/SetOH.o:	SetOH.c		dowser.h
+$(ARCH)/AmideFlip.o:	AmideFlip.c	dowser.h
+$(ARCH)/Math.o:		Math.c		dowser.h
+$(ARCH)/FindHBond.o:	FindHBond.c	dowser.h
+$(ARCH)/ReduceIntSurf.o:	ReduceIntSurf.c	dowser.h
+$(ARCH)/DictMake.o:	DictMake.c	dowser.h

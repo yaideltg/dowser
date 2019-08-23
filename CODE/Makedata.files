@@ -1,0 +1,20 @@
+DOWSER_H	= dowser.h
+MAIN_C	= pdb2ms.c scrape.c sparser.c drain.c chooser.c reformatPDB.c placeWat.c RefineWat.c CompareWat.c \
+    SetOH.c AmideFlip.c FindHBond.c ReduceIntSurf.c qms.c DictMake.c
+SUB_C = readPDB10.c \
+	WriteStr.c \
+	AddAtoms.c \
+	Align.c \
+	MinimizeFRPR.c \
+	MakeApex.c \
+	Math.c
+
+MAIN_F  = xms.f
+SUB_F =
+
+DOWSER_SRCS	= $(MAIN_C) $(SUB_C) $(MAIN_F) $(SUB_F)
+DOWSER_OBJS	= $(MAIN_C:.c=.o) $(SUB_C:.c=.o) $(MAIN_F:.f=.o) $(SUB_F:.f=.o)
+DOWSER_EXEC	= $(BINDIR)/pdb2ms $(BINDIR)/scrape $(BINDIR)/drain $(BINDIR)/chooser \
+    $(BINDIR)/xms $(BINDIR)/reformatPDB $(BINDIR)/placeWat $(BINDIR)/RefineWat $(BINDIR)/CompareWat \
+    $(BINDIR)/SetOH $(BINDIR)/AmideFlip $(BINDIR)/FindHBond $(BINDIR)/ReduceIntSurf $(BINDIR)/qms \
+    $(BINDIR)/DictMake

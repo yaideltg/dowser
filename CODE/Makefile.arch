@@ -1,0 +1,86 @@
+DOWSER = ../..
+include ../Makearch.$(DOW_MACH)
+
+CFLAGS= $(ARCH_COPTS) -I..
+FFLAGS= $(ARCH_FOPTS) -I..
+
+SRCC	= AddAtoms.c chooser.c drain.c pdb2ms.c readPDB10.c reformatPDB.c scrape.c WriteStr.c \
+	  placeWat.c Align.c MinimizeFRPR.c RefineWat.c CompareWat.c SetOH.c AmideFlip.c Math.c \
+	  FindHBond.c ReduceIntSurf.c MakeApex.c qms.c DictMake.c
+SRCF    = xms.f
+
+OBJ	= $(SRCC:.c=.o) $(SRCF:.f=.o)
+HEADER	= dowser.h
+
+all: $(OBJ)
+
+AddAtoms.o: ../AddAtoms.c
+	$(CC) -c $(CFLAGS) ../AddAtoms.c -o $@
+
+chooser.o: ../chooser.c
+	$(CC) -c $(CFLAGS) ../chooser.c -o $@
+
+drain.o: ../drain.c
+	$(CC) -c $(CFLAGS) ../drain.c -o $@
+
+pdb2ms.o: ../pdb2ms.c
+	$(CC) -c $(CFLAGS) ../pdb2ms.c -o $@
+
+readPDB10.o: ../readPDB10.c
+	$(CC) -c $(CFLAGS) ../readPDB10.c -o $@
+
+reformatPDB.o: ../reformatPDB.c
+	$(CC) -c $(CFLAGS) ../reformatPDB.c -o $@
+
+scrape.o: ../scrape.c
+	$(CC) -c $(CFLAGS) ../scrape.c -o $@
+
+WriteStr.o: ../WriteStr.c
+	$(CC) -c $(CFLAGS) ../WriteStr.c -o $@
+
+placeWat.o: ../placeWat.c
+	$(CC) -c $(CFLAGS) ../placeWat.c -o $@
+
+RefineWat.o: ../RefineWat.c
+	$(CC) -c $(CFLAGS) ../RefineWat.c -o $@
+
+CompareWat.o: ../CompareWat.c
+	$(CC) -c $(CFLAGS) ../CompareWat.c -o $@
+
+Align.o: ../Align.c
+	$(CC) -c $(CFLAGS) ../Align.c -o $@
+
+MinimizeFRPR.o: ../MinimizeFRPR.c
+	$(CC) -c $(CFLAGS) ../MinimizeFRPR.c -o $@
+
+qms.o: ../qms.c
+	$(CC) -c $(CFLAGS) ../qms.c -o $@
+
+MakeApex.o: ../MakeApex.c
+	$(CC) -c $(CFLAGS) ../MakeApex.c -o $@
+
+SetOH.o: ../SetOH.c
+	$(CC) -c $(CFLAGS) ../SetOH.c -o $@
+
+AmideFlip.o: ../AmideFlip.c
+	$(CC) -c $(CFLAGS) ../AmideFlip.c -o $@
+
+Math.o: ../Math.c
+	$(CC) -c $(CFLAGS) ../Math.c -o $@
+
+FindHBond.o: ../FindHBond.c
+	$(CC) -c $(CFLAGS) ../FindHBond.c -o $@
+
+ReduceIntSurf.o: ../ReduceIntSurf.c
+	$(CC) -c $(CFLAGS) ../ReduceIntSurf.c -o $@
+
+DictMake.o: ../DictMake.c
+	$(CC) -c $(CFLAGS) ../DictMake.c -o $@
+
+xms.o: ../xms.f
+	$(F77) -c $(FFLAGS) ../xms.f -o $@
+
+$(OBJ): ../$(HEADER)
+
+clean:
+	@rm -f $(OBJ)

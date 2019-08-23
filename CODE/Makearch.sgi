@@ -1,0 +1,26 @@
+#####
+# specific names of programs used in make commands
+#####
+CCPP		= CC
+CC		= cc
+F77		= f77
+CD		= fd
+COPY		= cp
+MOVE		= mv -f
+DELETE		= rm -f
+ECHO		= echo
+TAR		= tar
+COMPRESS	= compress
+AR		= ar rsc
+#RANLIB		= /bin/true
+COCMD		= co
+MAKE            = make
+
+#####
+# extra compiler and linker options
+#####
+ARCH_COPTS	=  -g 
+# ARCH_COPTS	=  -O2 -mips2
+ARCH_FOPTS	=  -O
+ARCH_LOPTS      =  -lm
+ARCH_FLOPTS     = 
