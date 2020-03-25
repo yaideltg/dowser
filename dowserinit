@@ -1,3 +1,0 @@
-setenv DOWSER /home/caom/Documents/test_dowser/dowser
-setenv DOW_MACH 
-set path = ( $path $DOWSER/bin $DOWSER/bin/$DOW_MACH )
