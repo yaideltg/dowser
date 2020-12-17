@@ -1,9 +1,10 @@
 #####
 # specific names of programs used in make commands
 #####
+#former gfortran 77 compiler is g77
 CCPP		= CC
 CC		= gcc
-F77		= g77
+F77		= gfortran-7
 CD		= fd
 COPY		= cp
 MOVE		= mv -f
