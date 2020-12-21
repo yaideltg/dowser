@@ -4,7 +4,7 @@
 #former gfortran 77 compiler is g77
 CCPP		= CC
 CC		= gcc
-F77		= gfortran-7
+F77		= gfortran
 CD		= fd
 COPY		= cp
 MOVE		= mv -f
