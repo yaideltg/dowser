@@ -35,13 +35,7 @@ Once you download the code, type:
      $ chmod u+x Install
      $ ./Install
      
-When installation ends type:
-     
-     $ source dowserinit
-     
-However, If you have some issues launching Dowser please check your Dowser program location:
-     
-You need to export the Dowser program location to your PATH. For BASH, edit your .bashrc or .bash_profile file typing:
+When installation ends, you need to export the Dowser program location to your PATH. For BASH, edit your .bashrc or .bash_profile file typing:
 
      export DOWSER=   # put here the Dowser absolute installation path
      export DOW_MACH=linux
@@ -53,13 +47,13 @@ For CSH type:
      setenv DOW_MACH linux
      set path = ( $path $DOWSER/bin $DOWSER/bin/$DOW_MACH )
 
-And then, source the edited file (in any case):
+And then, source the edited file (whichever your case):
 
     $ source .bashrc
 
 or
 
-    $ source .bashrc
+    $ source .bash_profile
     
 That's all.
 
