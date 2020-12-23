@@ -25,6 +25,11 @@ In other Dowser versions, you have to name your gfortran compiler absolute path 
     
 For Dowser in this (https://github.com/caraortizmah/dowser.git) GitHub repository version, gfortran compiler has to be named as gfortran.
 
+Prior to install Dowser you have to install csh e.g.:
+
+     $ sudo apt update
+     $ sudo apt install csh
+
 Download Dowser typing:
 
      $ git clone https://github.com/caraortizmah/dowser.git
@@ -33,6 +38,7 @@ Once you download the code, type:
 
      $ cd $PATH_dowser/
      $ chmod u+x Install
+     $ chmod u+x bin/dowser
      $ ./Install
      
 When installation ends, you need to export the Dowser program location to your PATH. For BASH, edit your .bashrc or .bash_profile file typing:
