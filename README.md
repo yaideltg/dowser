@@ -15,6 +15,10 @@ You need a FORTRAN (e.g. `gfortran`, `ifort`) and C (e.g. `gcc`) compilers in Li
 
 On this repository, the make configuration in file `CODE/Makearch.linux` already includes `gfortran` as the FORTRAN compiler. If you are using another compiler, or in case you are using any other of the available architectures, please modify the line `F77		= f77` inside the corresponding make configuration file to meet your specific situation.
 
+Also, this code was written back in the day using the K&R C (pre-ANSI) standard. An attempt to compile it with a modern C standard results in compilation errors due to old-style function definitions. To ignore them, you need to include the flags `-Wno-old-style-definition -std=gnu89` into the `ARCH_COPTS` list of your architecture make file.
+
+If you are using the Linux architecture, this has already been done for you (see `CODE/Makearch.linux`), otherwise, include them by yourself into the equivalent `CODE/Makearch.[your-architecture]` before attempting to compile the Dowser source code.
+
 ## Installation
 
 Once you have downloaded the code get into its folder, and execute the following orders:
@@ -31,7 +35,7 @@ When installation ends, you need to export the Dowser program location to your P
 
 For CSH type:
 
-     setenv DOWSER    # write the Dowser absolute installation path here
+     setenv DOWSER /path/to/dowser  # write the Dowser absolute installation path here
      setenv DOW_MACH linux
      set path = ( $path $DOWSER/bin $DOWSER/bin/$DOW_MACH )
 
