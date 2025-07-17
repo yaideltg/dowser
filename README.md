@@ -21,7 +21,7 @@ If you are using the Linux architecture, this has already been done for you (see
 
 ## Installation
 
-Once you have downloaded the code, get into its directory, and grant the following scripts with execution rights if they don't have it already. Then execute the installation:
+Once you have downloaded the code, get into its directory, and grant the following scripts with execution rights if they don't already have it. Then execute the installation:
 
      chmod u+x Install bin/dowser bin/append_dowser_water bin/append_index bin/cleanup_dowser bin/dryer bin/ms2pdb
      ./Install
