@@ -21,13 +21,16 @@ If you are using the Linux architecture, this has already been done for you (see
 
 ## Installation
 
-Once you have downloaded the code get into its folder, and execute the following orders:
+Once you have downloaded the code, get into its directory, and grant the following scripts with execution rights if they don't have it already. Then execute the installation:
 
-     chmod u+x Install
-     chmod u+x bin/dowser
+     chmod u+x Install bin/dowser bin/append_dowser_water bin/append_index bin/cleanup_dowser bin/dryer bin/ms2pdb
      ./Install
-     
-When installation ends, you need to export the Dowser program location to your PATH. For BASH, edit your .bashrc or .bash_profile file by typing:
+
+As a result, you should obtain a series of new executable under directory `bin/linux/` (or any other architecture you had selected). Make sure to grant them execution rights too:
+
+    chmod u+x bin/linux/*
+
+Now, to make these executable accessible from anywhere on the system, export the Dowser program location to your PATH. For BASH, edit your .bashrc or .bash_profile file by adding:
 
      export DOWSER=/path/to/dowser  # write your Dowser absolute installation path here
      export DOW_MACH=linux
@@ -39,7 +42,7 @@ For CSH type:
      setenv DOW_MACH linux
      set path = ( $path $DOWSER/bin $DOWSER/bin/$DOW_MACH )
 
-And then, source the edited file (whichever in your case):
+And finally, source the edited file (whichever is your case) to make the changes take effect:
 
      source .bashrc
 
